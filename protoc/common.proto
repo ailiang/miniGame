@@ -1,0 +1,17 @@
+syntax = "proto3";
+package protoc;
+
+enum MSG_TYPE {
+    MSG_MOVE = 0; 
+}
+
+message Pos {
+    int32 x = 1;
+    int32 y = 2;
+}
+
+message C2SPlayerMove {
+    MSG_TYPE msg = 1;
+    int32 playerId = 2;
+    Pos pos = 3; 
+}

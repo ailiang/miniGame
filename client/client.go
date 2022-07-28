@@ -8,6 +8,7 @@ import (
 	"log"
 	"miniGame/client/sprite"
 	"miniGame/client/world"
+	"net"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -99,6 +100,20 @@ func loadImage(filename string) image.Image {
 }
 
 func main() {
+
+	conn, err := net.Dial("tcp", "127.0.0.1:9999")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for i := 0; i < 100; i++ {
+		msg := "hello server \n"
+		_, e := conn.Write([]byte(msg))
+		if e != nil {
+			log.Fatal(err)
+		}
+	}
+
 	tileImg := loadImage("resource/tile.png")
 	runImgs := []image.Image{
 		loadImage("resource/run0.png"),
