@@ -14,7 +14,7 @@
             "args": [
                 "build",
                 "-o",
-                "${workspaceFolder}/server/"
+                "${workspaceFolder}/"
             ],
             "detail": "build server",
             "problemMatcher": [],
@@ -28,7 +28,7 @@
             "type": "shell",
             "command": "go",
             "options": {
-                "cwd": "${workspaceFolder}/exec/client",
+                "cwd": "${workspaceFolder}/client",
                 "env": {
                     "GO111MODULE": "on"
                 }
@@ -36,7 +36,7 @@
             "args": [
                 "build",
                 "-o",
-                "${workspaceFolder}/exedir/"
+                "${workspaceFolder}/"
             ],
             "detail": "build server",
             "problemMatcher": [],

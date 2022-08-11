@@ -3,9 +3,11 @@ package main
 import (
 	"bytes"
 	"embed"
+	"fmt"
 	"image"
 	_ "image/png"
 	"log"
+	"math"
 	"miniGame/client/sprite"
 	"miniGame/client/world"
 	"net"
@@ -22,6 +24,9 @@ const (
 	worldHeight  = 10000
 	windowWidth  = 800
 	windowHeight = 600
+
+	moveStep     = 5
+	viewMoveStep = 3
 )
 
 type Game struct {
@@ -40,31 +45,39 @@ func (g *Game) Update() error {
 	for _, k := range g.keys {
 		switch k {
 		case ebiten.KeyA:
-			g.mainCharacter.Move(-5, 0)
+			x, _ := g.mainCharacter.Position()
+			step := math.Min(moveStep, x)
+			g.mainCharacter.Move(-step, 0)
 		case ebiten.KeyD:
-			g.mainCharacter.Move(5, 0)
+			x, _ := g.mainCharacter.Position()
+			step := math.Min(moveStep, worldWidth-x)
+			g.mainCharacter.Move(step, 0)
 		case ebiten.KeyW:
-			g.mainCharacter.Move(0, -5)
+			_, y := g.mainCharacter.Position()
+			step := math.Min(moveStep, y)
+			g.mainCharacter.Move(0, -step)
 		case ebiten.KeyS:
-			g.mainCharacter.Move(0, 5)
+			_, y := g.mainCharacter.Position()
+			step := math.Min(moveStep, worldHeight-y)
+			g.mainCharacter.Move(0, step)
 
 		case ebiten.KeyLeft:
-			g.viewX -= 3
+			g.viewX -= viewMoveStep
 			if g.viewX < 0 {
 				g.viewX = 0
 			}
 		case ebiten.KeyRight:
-			g.viewX += 3
+			g.viewX += viewMoveStep
 			if g.viewX > worldWidth-windowWidth {
 				g.viewX = worldWidth - windowWidth
 			}
 		case ebiten.KeyUp:
-			g.viewY -= 3
+			g.viewY -= viewMoveStep
 			if g.viewY < 0 {
 				g.viewY = 0
 			}
 		case ebiten.KeyDown:
-			g.viewY += 3
+			g.viewY += viewMoveStep
 			if g.viewY > worldHeight-windowHeight {
 				g.viewY = worldHeight - windowHeight
 			}
@@ -80,6 +93,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	view := image.Rect(g.viewX, g.viewY, g.viewX+windowWidth, g.viewY+windowHeight)
 	g.wld.DrawTerrian(screen, view)
 	g.mainCharacter.Draw(screen, view)
+	x, y := g.mainCharacter.Position()
+	t := fmt.Sprintf("%f,%f", x, y)
+	ebiten.SetWindowTitle(t)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
